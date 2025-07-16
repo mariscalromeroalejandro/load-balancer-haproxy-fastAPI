@@ -17,6 +17,30 @@ services:
     ports:
       - "8002:8000"
 
+  fastapi3:
+    build:
+      context: ./app
+    environment:
+      - INSTANCE_ID=3
+    ports:
+      - "8003:8000"
+
+  fastapi4:
+    build:
+      context: ./app
+    environment:
+      - INSTANCE_ID=4
+    ports:
+      - "8004:8000"
+
+  fastapi5:
+    build:
+      context: ./app
+    environment:
+      - INSTANCE_ID=5
+    ports:
+      - "8005:8000"
+
   haproxy:
     image: haproxy:3.3-dev
     volumes:
@@ -26,3 +50,6 @@ services:
     depends_on:
       - fastapi1
       - fastapi2
+      - fastapi3
+      - fastapi4
+      - fastapi5

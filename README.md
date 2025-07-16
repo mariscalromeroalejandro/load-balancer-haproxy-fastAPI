@@ -5,15 +5,22 @@ A simple load-balanced FastAPI application using HAProxy and Docker Compose.
 ## Architecture
 
 ```mermaid
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
 graph TD
-    A[Client] --> B[HAProxy Load Balancer<br/>Port 80]
-    B --> C[FastAPI Instance 1<br/>Port 8001<br/>INSTANCE_ID=1]
-    B --> D[FastAPI Instance 2<br/>Port 8002<br/>INSTANCE_ID=2]
+    A[Client] -->|HTTP Requests| B[HAProxy Load Balancer<br/>Port 80]
+    B -->|Round Robin| C[FastAPI Instance 1<br/>Port 8001<br/>INSTANCE_ID=1]
+    B -->|Round Robin| D[FastAPI Instance 2<br/>Port 8002<br/>INSTANCE_ID=2]
+    B -->|Round Robin| E[FastAPI Instance 3<br/>Port 8003<br/>INSTANCE_ID=3]
+    B -->|Round Robin| F[FastAPI Instance 4<br/>Port 8004<br/>INSTANCE_ID=4]
+    B -->|Round Robin| G[FastAPI Instance 5<br/>Port 8005<br/>INSTANCE_ID=5]
+
+    B -->|HTTP Response| A
 ```
 
-- **2 FastAPI instances** running on ports 8001 and 8002
+- **5 FastAPI instances** running on ports 8001-8005
 - **HAProxy load balancer** distributing traffic on port 80
-- **Round-robin load balancing** between FastAPI instances
+- **Round-robin load balancing** across all FastAPI instances
+- **Improved load distribution** with 2.5x more capacity
 
 ## Quick Start
 
@@ -30,6 +37,9 @@ graph TD
    # Test individual instances
    curl http://localhost:8001
    curl http://localhost:8002
+   curl http://localhost:8003
+   curl http://localhost:8004
+   curl http://localhost:8005
    ```
 
 ## Testing Load Balancing
@@ -39,9 +49,12 @@ Run multiple requests to see load distribution:
 for i in {1..10}; do curl http://localhost; echo; done
 ```
 
-You should see responses alternating between:
+You should see responses rotating between:
 - `{"message": "Hello from FastAPI instance 1"}`
 - `{"message": "Hello from FastAPI instance 2"}`
+- `{"message": "Hello from FastAPI instance 3"}`
+- `{"message": "Hello from FastAPI instance 4"}`
+- `{"message": "Hello from FastAPI instance 5"}`
 
 ## Services
 
@@ -50,6 +63,9 @@ You should see responses alternating between:
 | HAProxy | 80 | Load balancer frontend |
 | FastAPI Instance 1 | 8001 | First FastAPI app |
 | FastAPI Instance 2 | 8002 | Second FastAPI app |
+| FastAPI Instance 3 | 8003 | Third FastAPI app |
+| FastAPI Instance 4 | 8004 | Fourth FastAPI app |
+| FastAPI Instance 5 | 8005 | Fifth FastAPI app |
 
 ## Files Structure
 
