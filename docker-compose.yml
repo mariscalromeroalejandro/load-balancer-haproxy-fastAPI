@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  fastapi1:
+    build:
+      context: ./app
+    environment:
+      - INSTANCE_ID=1
+    ports:
+      - "8001:8000"
+
+  fastapi2:
+    build:
+      context: ./app
+    environment:
+      - INSTANCE_ID=2
+    ports:
+      - "8002:8000"
+
+  haproxy:
+    image: haproxy:3.3-dev
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi1
+      - fastapi2
