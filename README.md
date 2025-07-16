@@ -4,6 +4,13 @@ A simple load-balanced FastAPI application using HAProxy and Docker Compose.
 
 ## Architecture
 
+```mermaid
+graph TD
+    A[Client] --> B[HAProxy Load Balancer<br/>Port 80]
+    B --> C[FastAPI Instance 1<br/>Port 8001<br/>INSTANCE_ID=1]
+    B --> D[FastAPI Instance 2<br/>Port 8002<br/>INSTANCE_ID=2]
+```
+
 - **2 FastAPI instances** running on ports 8001 and 8002
 - **HAProxy load balancer** distributing traffic on port 80
 - **Round-robin load balancing** between FastAPI instances
